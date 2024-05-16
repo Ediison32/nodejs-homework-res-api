@@ -1,20 +1,23 @@
-const Joi = require('joi')
+const Joi = require('joi');
 const express = require('express');
 
 const userSchema = Joi.object({
     name: Joi.string().required(),
+    email: Joi.string().email().required(),
     phone: Joi.string().required(),
-    email: Joi.string().email().required()
-  });
+    favorite: Joi.boolean()
+});
 
-const validateInfo = (req,res,next)=>{
+const validate= (req, res, next) => {
     const { error, value } = userSchema.validate(req.body);
                                     
-    console.log(req.body);
-    if(error){
-        return res.status(400).json({"message": "missing required name fieldd"})
+    console.log(req.body, error); 
+    
+    if (error) {
+        return res.status(406).json({ message: `Missing required field(s): ${error.details.map(detail => detail.context.key).join(', ')}` });
     }
-    next()
-}
+    
+    next();
+};
 
-module.exports= validateInfo;
+module.exports = validate;

@@ -7,6 +7,12 @@ const middleId =require('../../middleware/middId')
 const validata = require('../../middleware/validar')
 const valiputbody =require('../../middleware/validarput')
 
+const Joi = require("joi");
+const { Schema, model } = require("mongoose");
+
+
+
+
 router.get('/contacts', async (req, res, next) => {
   
   const list = await contacts.listContacts();
@@ -24,7 +30,7 @@ router.get('/contacts/:id', async (req, res, next) => {
   
 })
 
-router.post('/contacts',  [middle,validata],  async (req, res, next) => {
+router.post('/contacts', validata, async (req, res, next) => {
   console.log(req.body);
   const newContact = await contacts.addContact(req.body);
   res.json(newContact).status(201)
@@ -46,7 +52,7 @@ router.put('/:contactId',valiputbody, async (req, res, next) => {
   
   //const actulizar = await contacts.updateContact(req.params.contactId, req.body)
   const actulizar = await contacts.updateContact(req.params.contactId, req.body)
-  if(!actulizar){
+  if(actulizar){
     console.log(actulizar);
     return res.json({"mensaje": "contacto actualizado"}).status(200)
   }

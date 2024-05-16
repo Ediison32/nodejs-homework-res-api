@@ -5,9 +5,13 @@ const path = require('path');
 const consctPath = path.resolve('models/contacts.json')
 const validar =require('../middleware/validar')
 
+const db =require("../conexion-db/db")
+
 const listContacts = async () => {
-  const list = await fs.readFile(consctPath)
-  return JSON.parse(list)
+  //const list = await fs.readFile(consctPath)
+  //return JSON.parse(list)
+  const list = await db.find();
+  return list;
 }
 
 const getContactById = async (contactId) => {
@@ -22,27 +26,30 @@ const removeContact = async (contactId) => {
   let list= await listContacts();
   const removelist =  list.findIndex((x)=> x.id === contactId);
   if(removelist != -1){
-    const [result]= list.splice(removelist,1);
-    await fs.writeFile(consctPath, JSON.stringify(list, null, 2))
+    //const [result]= list.splice(removelist,1);
+    //await fs.writeFile(consctPath, JSON.stringify(list, null, 2))
+    const result = await db.findByIdAndDelete({_id: contactId})
     return result
   }
   return null
 }
 
 const addContact = async (body) => {
-  //validar(req.body)
-  const list= await listContacts();
+  
+  //const list= await listContacts();
   const newId = await newid();
   console.log(`nuevo id= ${newId}`) ;
    const nuecontac = {
     id: newId,
     name:body.name,
     email:body.email,
-    phone:body.phone
+    phone:body.phone 
+    /* ...body */
   } 
-  
-  list.push(nuecontac)
-  await fs.writeFile(consctPath, JSON.stringify(list,null,2));
+
+  await db.create(nuecontac)
+ /*  list.push(nuecontac)
+  await fs.writeFile(consctPath, JSON.stringify(list,null,2)); */
   return nuecontac
 }
 
@@ -52,16 +59,19 @@ const updateContact = async (contactId, body) => {
   
   const removelist =  list.findIndex((x)=> x.id === contactId);
   if(removelist != -1){
-  list.forEach(element => {
-    if(element.id === contactId){
-      element.name = body.name;
-      element.email = body.email;
-      element.phone = body.phone;
-    }
     
-  });
-  await fs.writeFile(consctPath, JSON.stringify(list,null,2));
-  return list[removeContact]
+    const list = await db.findByIdAndUpdate(contactId,
+      {
+        $set :{
+          name:body.name,
+          email:body.email,
+          phone:body.phone,
+          favorite:body.favorite
+          }
+        }
+      )
+     
+  return true
 }
 return null
 

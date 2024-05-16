@@ -10,5 +10,7 @@ const middleware =(req,res,next)=>{
         return res.status(400).json({"message": "missing required name field"})
         }
     next()
-}
-module.exports=middleware;
+} 
+
+
+module.exports = middleware;
