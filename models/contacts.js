@@ -61,7 +61,8 @@ const updateContact = async (contactId, body) => {
     
   });
   await fs.writeFile(consctPath, JSON.stringify(list,null,2));
-  return list[removeContact]
+  
+  return true
 }
 return null
 

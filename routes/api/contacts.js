@@ -32,7 +32,7 @@ router.post('/contacts',  [middle,validata],  async (req, res, next) => {
   
 })
 
-router.delete('/:contactId',middleId, async (req, res, next) => {
+router.delete('/contacts/:contactId',middleId, async (req, res, next) => {
   const deletedContact = await contacts.removeContact(req.params.contactId);
   if (!deletedContact){
     return res.json({message: 'Not found'}).status(404);
@@ -41,12 +41,12 @@ router.delete('/:contactId',middleId, async (req, res, next) => {
   //res.json({ message: 'template message' })
 })
 
-router.put('/:contactId',valiputbody, async (req, res, next) => {
+router.put('/contacts/:contactId',valiputbody, async (req, res, next) => {
   console.log("pasando primer filtro ");
   
   //const actulizar = await contacts.updateContact(req.params.contactId, req.body)
   const actulizar = await contacts.updateContact(req.params.contactId, req.body)
-  if(!actulizar){
+  if(actulizar){
     console.log(actulizar);
     return res.json({"mensaje": "contacto actualizado"}).status(200)
   }

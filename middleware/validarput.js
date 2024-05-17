@@ -7,7 +7,7 @@ const userbody = Joi.object({
 }).or("name", "age", "email")
 
 const validateInfoput=(req,res,next)=>{
-    console.log("entroooooo");
+    
     const {error}=userbody.validate(req.body);
     if(error){
         return res.status(400).json({"message": "missing fields"})      
